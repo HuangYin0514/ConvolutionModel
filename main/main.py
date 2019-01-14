@@ -50,18 +50,18 @@ if __name__ == '__main__':
     print("cache_conv[0][1][2][3] = ", cache_conv[0][1][2][3])
 
     # --------------pooling forward
-    np.random.seed(1)
-    A_prev = np.random.randn(2, 4, 4, 3)
-    hparameters = {"stride": 1,
-                   "f": 4}
-    A, cache = pool_forward(A_prev, hparameters)
-    print("mode = max")
-    print("A = ", A)
-    print()
-    A, cache = pool_forward(A_prev, hparameters, mode="average")
-    print("mode = average")
-    print("A = ", A)
-    print()
+    # np.random.seed(1)
+    # A_prev = np.random.randn(2, 4, 4, 3)
+    # hparameters = {"stride": 1,
+    #                "f": 4}
+    # A, cache = pool_forward(A_prev, hparameters)
+    # print("mode = max")
+    # print("A = ", A)
+    # print()
+    # A, cache = pool_forward(A_prev, hparameters, mode="average")
+    # print("mode = average")
+    # print("A = ", A)
+    # print()
 
     # -------------------convolution backward
     np.random.seed(1)
@@ -87,3 +87,21 @@ if __name__ == '__main__':
     # --------------distribute value of dz
     a = distribute_value(2, (2, 2))
     print('distribute value = ', a)
+
+    # ---------------pooling backward
+    np.random.seed(1)
+    A_prev = np.random.randn(5, 5, 3, 2)
+    dA = np.random.randn(5, 4, 2, 2)
+
+    hparameters = {"stride": 1, "f": 2}
+    A, cache = pool_forward(A_prev, hparameters)
+
+    dA_prev = pool_backward(dA, cache, mode="max")
+    print("mode = max")
+    print('mean of dA = ', np.mean(dA))
+    print('dA_prev[1,1] = ', dA_prev[1, 1])
+    print()
+    dA_prev = pool_backward(dA, cache, mode="average")
+    print("mode = average")
+    print('mean of dA = ', np.mean(dA))
+    print('dA_prev[1,1] = ', dA_prev[1, 1])

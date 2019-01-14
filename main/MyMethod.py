@@ -114,12 +114,12 @@ def pool_forward(A_prev, hparameters, mode="max"):
                 for c in range(n_C):
                     vert_start = h * stride
                     vert_end = vert_start + f
-                    horiz_start = h * stride
+                    horiz_start = w * stride
                     horiz_end = horiz_start + f
                     a_prev_slice = A_prev[i, vert_start:vert_end, horiz_start: horiz_end, c]
                     if mode == "max":
                         A[i, h, w, c] = np.max(a_prev_slice)
-                    if mode == "average":
+                    elif mode == "average":
                         A[i, h, w, c] = np.mean(a_prev_slice)
     cache = (A_prev, hparameters)
     assert (A.shape == (m, n_H, n_W, n_C))
@@ -220,3 +220,48 @@ def distribute_value(dz, shape):
     average = dz / (n_H * n_W)
     a = np.ones(shape) * average
     return a
+
+
+def pool_backward(dA, cache, mode="max"):
+    """
+       Implements the backward pass of the pooling layer
+
+       Arguments:
+       dA -- gradient of cost with respect to the output of the pooling layer, same shape as A
+       cache -- cache output from the forward pass of the pooling layer, contains the layer's input and hparameters
+       mode -- the pooling mode you would like to use, defined as a string ("max" or "average")
+
+       Returns:
+       dA_prev -- gradient of cost with respect to the input of the pooling layer, same shape as A_prev
+       """
+    # Retrieve value from parameters
+    (A_prev, hparameters) = cache
+    (m, n_H_prev, n_W_prev, n_C_prev) = A_prev.shape
+    (m, n_H, n_W, n_C) = dA.shape
+
+    stride = hparameters["stride"]
+    f = hparameters["f"]
+
+    dA_prev = np.zeros(A_prev.shape)
+
+    for i in range(m):
+        a_prev = A_prev[i]
+        for h in range(n_H):
+            for w in range(n_W):
+                for c in range(n_C):
+                    vert_start = h * stride
+                    vert_end = vert_start + f
+                    horiz_start = w * stride
+                    horiz_end = horiz_start + f
+
+                    if mode == "max":
+                        a_prev_slice = a_prev[vert_start:vert_end, horiz_start:horiz_end, c]
+                        mask = create_mask_from_windows(a_prev_slice)
+                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, c] += np.multiply(mask, dA[i, h, w, c])
+                    elif mode == "average":
+                        da = dA[i, h, w, c]
+                        shape = (f, f)
+                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, c] += distribute_value(da, shape)
+
+    assert (dA_prev.shape == A_prev.shape)
+    return dA_prev
