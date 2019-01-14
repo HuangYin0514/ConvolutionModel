@@ -84,3 +84,6 @@ if __name__ == '__main__':
     print('x = ', x)
     print("mask = ", mask)
 
+    # --------------distribute value of dz
+    a = distribute_value(2, (2, 2))
+    print('distribute value = ', a)
