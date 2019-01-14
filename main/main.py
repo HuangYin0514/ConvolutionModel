@@ -76,3 +76,11 @@ if __name__ == '__main__':
     print("dA_mean =", np.mean(dA))
     print("dW_mean =", np.mean(dW))
     print("db_mean =", np.mean(db))
+
+    # ----------------create the pooling mask
+    np.random.seed(1)
+    x = np.random.randn(2, 3)
+    mask = create_mask_from_windows(x)
+    print('x = ', x)
+    print("mask = ", mask)
+

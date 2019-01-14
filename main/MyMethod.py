@@ -190,3 +190,16 @@ def conv_backward(dZ, cache):
     assert (dA_prev.shape == (m, n_H_prev, n_W_prev, n_C_prev))
 
     return dA_prev, dW, db
+
+
+def create_mask_from_windows(x):
+    """
+    Creates a mask from an input matrix x, to identify the max entry of x.
+     Arguments:
+     x -- Array of shape (f, f)
+
+     Returns:
+     mask -- Array of the same shape as window, contains a True at the position corresponding to the max entry of x.
+    """
+    mask = x == np.max(x)
+    return mask
