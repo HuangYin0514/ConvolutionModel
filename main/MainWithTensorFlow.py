@@ -43,7 +43,7 @@ if __name__ == '__main__':
     conv_layers = {}
 
     # test create_placeholders
-    X,Y = create_placeholders(64, 64, 3, 6)
+    X, Y = create_placeholders(64, 64, 3, 6)
     print("X = " + str(X))
     print("Y = " + str(Y))
 
@@ -53,5 +53,17 @@ if __name__ == '__main__':
         parameters = initialize_parameters()
         init = tf.global_variables_initializer()
         session.run(init)
-        print("W1 = ", str(parameters["W1"].eval()[1,1,1]))
-        print("W2 = ", str(parameters["W2"].eval()[1,1,1]))
+        print("W1 = ", str(parameters["W1"].eval()[1, 1, 1]))
+        print("W2 = ", str(parameters["W2"].eval()[1, 1, 1]))
+
+    # forward_propagation
+    tf.reset_default_graph()
+    with tf.Session() as session:
+        np.random.seed(1)
+        X, Y = create_placeholders(64, 64, 3, 6)
+        parameters = initialize_parameters()
+        Z3 = forward_propagation(X, parameters)
+        init = tf.global_variables_initializer()
+        session.run(init)
+        a = session.run(Z3, {X: np.random.randn(2, 64, 64, 3), Y: np.random.randn(2, 6)})
+        print("Z3 = ",str(a))
