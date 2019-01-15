@@ -66,4 +66,20 @@ if __name__ == '__main__':
         init = tf.global_variables_initializer()
         session.run(init)
         a = session.run(Z3, {X: np.random.randn(2, 64, 64, 3), Y: np.random.randn(2, 6)})
-        print("Z3 = ",str(a))
+        print("Z3 = ", str(a))
+
+    # forward_propagation
+    tf.reset_default_graph()
+    with tf.Session() as session:
+        np.random.seed(1)
+        X, Y = create_placeholders(64, 64, 3, 6)
+        parameters = initialize_parameters()
+        Z3 = forward_propagation(X, parameters)
+        cost = compute_cost(Z3, Y)
+        init = tf.global_variables_initializer()
+        session.run(init)
+        a = session.run(cost, {X: np.random.randn(4, 64, 64, 3), Y: np.random.randn(4, 6)})
+        print("cost = ", str(a))
+
+    # test model
+    _, _, paramters = model(X_train, Y_train, X_test, Y_test,num_epochs=100)
