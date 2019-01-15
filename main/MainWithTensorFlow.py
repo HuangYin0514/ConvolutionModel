@@ -14,6 +14,7 @@ from scipy import ndimage
 import tensorflow as tf
 from tensorflow.python.framework import ops
 from cnn_utils import *
+from ConvWithTensorFlowMethod import *
 
 if __name__ == '__main__':
     # keep same random
@@ -40,3 +41,17 @@ if __name__ == '__main__':
     print("X_test shape: " + str(X_test.shape))
     print("Y_test shape: " + str(Y_test.shape))
     conv_layers = {}
+
+    # test create_placeholders
+    X,Y = create_placeholders(64, 64, 3, 6)
+    print("X = " + str(X))
+    print("Y = " + str(Y))
+
+    # test initialize_parameters
+    tf.reset_default_graph()
+    with tf.Session() as session:
+        parameters = initialize_parameters()
+        init = tf.global_variables_initializer()
+        session.run(init)
+        print("W1 = ", str(parameters["W1"].eval()[1,1,1]))
+        print("W2 = ", str(parameters["W2"].eval()[1,1,1]))
