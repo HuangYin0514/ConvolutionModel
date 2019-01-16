@@ -180,3 +180,4 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.009, num_epochs=100,
         print("Test Accuracy:", test_accuracy)
 
         return train_accuracy, test_accuracy, parameters
+
