@@ -61,5 +61,5 @@ if __name__ == '__main__':
     print(happyModel.predict(x))
 
     happyModel.summary()
-    # plot_model(happyModel,to_file='HappyModel.png')
-    # SVG(model_to_dot(happyModel).create(prog='dot',format='svg'))
+    plot_model(happyModel,to_file='HappyModel.png')
+    SVG(model_to_dot(happyModel).create(prog='dot',format='svg'))
